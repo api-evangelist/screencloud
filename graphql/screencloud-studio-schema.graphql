@@ -1,0 +1,358 @@
+"""
+ScreenCloud Studio API - GraphQL Schema (curated subset)
+
+This is a curated, honestly-reduced Schema Definition Language (SDL) view of the
+public ScreenCloud Studio API (Studio Service v2.103.0). ScreenCloud exposes a
+single GraphQL endpoint, authenticated with a bearer token, whose URL is
+region-specific and copied from the DEVELOPER tab in ScreenCloud Studio.
+
+The Query and Mutation fields below are taken verbatim from the public GraphQL
+reference (screencloud.github.io/signage-next-graphql-docs). The full production
+schema is far larger (hundreds of queries and mutations plus extensive billing,
+SSO, notification, and white-label surfaces); the object/input field bodies here
+are MODELED for readability and are not exhaustive. Consult the live GraphQL
+reference or introspect your region's endpoint for authoritative types.
+
+Endpoint:      region-specific (copy from Studio > Account Settings > DEVELOPER)
+Auth:          Authorization: Bearer <API_TOKEN>
+Transport:     HTTPS, request/response GraphQL (no WebSocket, no subscriptions)
+Reference:     https://screencloud.github.io/signage-next-graphql-docs/graphql-reference
+"""
+
+# ─────────────────────────────────────────────
+# Scalars
+# ─────────────────────────────────────────────
+
+scalar UUID
+scalar Datetime
+scalar JSON
+scalar Cursor
+
+# ─────────────────────────────────────────────
+# Enums (subset)
+# ─────────────────────────────────────────────
+
+enum ScreensOrderBy {
+  NAME_ASC
+  NAME_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+}
+
+enum ChannelType {
+  DEFAULT
+  DRAFT
+}
+
+enum ChannelLayout {
+  SINGLE_ZONE
+  MULTI_ZONE
+}
+
+enum AppInstanceStatus {
+  ACTIVE
+  EXPIRED
+  DISABLED
+}
+
+enum CommandType {
+  REFRESH
+  CLEAR_CACHE
+  SCREENSHOT
+  RESTART
+}
+
+# ─────────────────────────────────────────────
+# Core object types (modeled fields)
+# ─────────────────────────────────────────────
+
+type Screen {
+  id: UUID!
+  name: String
+  deviceId: String
+  spaceId: UUID
+  screenGroupId: UUID
+  content: ScreenContent
+  device: Device
+  tags: [Tag!]
+  createdAt: Datetime
+  updatedAt: Datetime
+}
+
+type Device {
+  id: UUID!
+  hardwareModel: String
+  os: String
+  appVersion: String
+  online: Boolean
+}
+
+type ScreenContent {
+  contentType: String
+  contentId: UUID
+}
+
+type ScreenGroup {
+  id: UUID!
+  name: String
+  spaceId: UUID
+}
+
+type Playlist {
+  id: UUID!
+  name: String
+  color: String
+  isPublished: Boolean
+  items: [PlaylistItem!]
+  tags: [Tag!]
+  createdAt: Datetime
+}
+
+type PlaylistItem {
+  id: UUID!
+  contentType: String
+  contentId: UUID
+  durationMs: Int
+}
+
+type File {
+  id: UUID!
+  name: String
+  mimeType: String
+  fileSize: Int
+  folderId: UUID
+  availableAt: Datetime
+  expireAt: Datetime
+  tags: [Tag!]
+}
+
+type Folder {
+  id: UUID!
+  name: String
+  parentId: UUID
+}
+
+type Channel {
+  id: UUID!
+  name: String
+  channelType: ChannelType
+  layout: ChannelLayout
+  isPublished: Boolean
+  zones: [ChannelZone!]
+  tags: [Tag!]
+}
+
+type ChannelZone {
+  id: UUID!
+  name: String
+  items: [ChannelItem!]
+}
+
+type ChannelItem {
+  id: UUID!
+  contentType: String
+  contentId: UUID
+}
+
+type Cast {
+  id: UUID!
+  screenId: UUID
+  contentType: String
+  contentId: UUID
+  startedAt: Datetime
+}
+
+type App {
+  id: UUID!
+  name: String
+  slug: String
+  categoryId: UUID
+  visibility: String
+}
+
+type AppInstance {
+  id: UUID!
+  appId: UUID
+  name: String
+  status: AppInstanceStatus
+  config: JSON
+  spaceId: UUID
+}
+
+type Space {
+  id: UUID!
+  name: String
+  orgId: UUID
+}
+
+type Site {
+  id: UUID!
+  name: String
+  address: String
+}
+
+type Tag {
+  id: UUID!
+  name: String
+}
+
+type Org {
+  id: UUID!
+  name: String
+  slug: String
+}
+
+type User {
+  id: UUID!
+  email: String
+  firstName: String
+  lastName: String
+}
+
+type Token {
+  id: UUID!
+  name: String
+  secret: String
+}
+
+type PlaybackLogEntry {
+  screenId: UUID
+  contentType: String
+  contentId: UUID
+  startedAt: Datetime
+  endedAt: Datetime
+  durationMs: Int
+}
+
+type QRMetric {
+  contentId: UUID
+  scans: Int
+  period: String
+}
+
+# ─────────────────────────────────────────────
+# Query root (field names are verbatim from the public schema)
+# ─────────────────────────────────────────────
+
+type Query {
+  # Session / identity
+  currentOrg: Org
+  currentOrgId: UUID
+  currentUser: User
+
+  # Screens
+  allScreens: [Screen!]
+  screen(id: UUID!): Screen
+  screenById(id: UUID!): Screen
+  screenByDeviceId(deviceId: String!): Screen
+  searchScreen(query: String!): [Screen!]
+  screensCount: Int
+  allScreenGroups: [ScreenGroup!]
+
+  # Playlists
+  allPlaylists: [Playlist!]
+  playlist(id: UUID!): Playlist
+  playlistById(id: UUID!): Playlist
+  searchPlaylist(query: String!): [Playlist!]
+
+  # Files / media / folders
+  allFiles: [File!]
+  file(id: UUID!): File
+  searchFile(query: String!): [File!]
+  filesByTagNames(tagNames: [String!]!): [File!]
+  allFolders: [Folder!]
+  folderHierarchy(id: UUID!): [Folder!]
+
+  # Channels / casts
+  allChannels: [Channel!]
+  channel(id: UUID!): Channel
+  searchChannel(query: String!): [Channel!]
+  allCasts: [Cast!]
+  cast(id: UUID!): Cast
+
+  # Apps / app instances
+  allApps: [App!]
+  app(id: UUID!): App
+  appBySlug(slug: String!): App
+  allAppInstances: [AppInstance!]
+  appInstance(id: UUID!): AppInstance
+
+  # Spaces / sites / tags
+  allSpaces: [Space!]
+  allSites: [Site!]
+  allTags: [Tag!]
+
+  # Playback logs / analytics
+  getPlaybackLogs(screenId: UUID, from: Datetime, to: Datetime): [PlaybackLogEntry!]
+  exportPlaybackLogs(from: Datetime, to: Datetime): String
+  allScreenContentHistories: [PlaybackLogEntry!]
+  getQRMetrics(contentId: UUID): [QRMetric!]
+  downloadQRMetrics: String
+}
+
+# ─────────────────────────────────────────────
+# Mutation root (field names are verbatim from the public schema)
+# ─────────────────────────────────────────────
+
+type Mutation {
+  # Screens
+  pairScreen(pairingCode: String!, name: String, spaceId: UUID): Screen
+  depairScreen(id: UUID!): Screen
+  createScreen(name: String!, spaceId: UUID!): Screen
+  updateScreenById(id: UUID!, name: String): Screen
+  deleteScreen(id: UUID!): Screen
+  createScreenGroup(name: String!, spaceId: UUID!): ScreenGroup
+  refreshScreen(id: UUID!): Screen
+  clearCacheScreen(id: UUID!): Screen
+  takeScreenshotByScreenId(screenId: UUID!): String
+  sendCommandToScreensByScreenIds(screenIds: [UUID!]!, command: CommandType!): Boolean
+
+  # Assign content to screens
+  setScreenContent(screenId: UUID!, contentType: String!, contentId: UUID!): Screen
+  setScreenContentByPlaylistId(screenId: UUID!, playlistId: UUID!): Screen
+  setScreenContentByChannelId(screenId: UUID!, channelId: UUID!): Screen
+  setScreenContentByFileId(screenId: UUID!, fileId: UUID!): Screen
+  bulkUpdateScreenContent(screenIds: [UUID!]!, contentType: String!, contentId: UUID!): [Screen!]
+
+  # Playlists
+  createPlaylist(name: String!, spaceId: UUID!): Playlist
+  updatePlaylist(id: UUID!, name: String): Playlist
+  deletePlaylist(id: UUID!): Playlist
+  addFileToPlaylist(playlistId: UUID!, fileId: UUID!, durationMs: Int): Playlist
+  addLinkToPlaylist(playlistId: UUID!, linkId: UUID!): Playlist
+  addAppInstanceToPlaylist(playlistId: UUID!, appInstanceId: UUID!): Playlist
+  publishDraftPlaylist(id: UUID!): Playlist
+
+  # Files / media / folders
+  createFile(name: String!, spaceId: UUID!): File
+  updateFileById(id: UUID!, name: String): File
+  deleteFileById(id: UUID!): File
+  createFolder(name: String!, parentId: UUID): Folder
+
+  # Channels / casts
+  createChannel(name: String!, spaceId: UUID!): Channel
+  updateChannel(id: UUID!, name: String): Channel
+  deleteChannel(id: UUID!): Channel
+  publishDraftChannel(id: UUID!): Channel
+  duplicateChannel(id: UUID!): Channel
+  addPlaylistToChannel(channelId: UUID!, playlistId: UUID!, zoneId: UUID): Channel
+  addFileToChannel(channelId: UUID!, fileId: UUID!, zoneId: UUID): Channel
+  addAppInstanceToChannel(channelId: UUID!, appInstanceId: UUID!, zoneId: UUID): Channel
+  castStart(screenId: UUID!, contentType: String!, contentId: UUID!): Cast
+  castStop(id: UUID!): Cast
+  createCasts(screenIds: [UUID!]!, contentType: String!, contentId: UUID!): [Cast!]
+
+  # Apps / app instances
+  createAppInstance(appId: UUID!, name: String!, spaceId: UUID!, config: JSON): AppInstance
+  updateAppInstance(id: UUID!, config: JSON): AppInstance
+  deleteAppInstance(id: UUID!): AppInstance
+  installOrgApp(appId: UUID!): App
+  installSpaceApp(appId: UUID!, spaceId: UUID!): App
+  uninstallOrgApp(appId: UUID!): App
+
+  # Org / spaces / tokens / tags
+  createSpace(name: String!): Space
+  createSite(name: String!): Site
+  createTag(name: String!, spaceId: UUID!): Tag
+  createToken(name: String!): Token
+}

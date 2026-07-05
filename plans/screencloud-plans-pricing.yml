@@ -1,0 +1,109 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: ScreenCloud
+providerId: screencloud
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Digital Signage
+- Screens
+- Content Management
+- Plans
+- Pricing
+description: >-
+  ScreenCloud is priced per screen per month, billed monthly or annually, in USD,
+  GBP, EUR, or CAD. There are three tiers - Core, Pro, and Enterprise. The Studio
+  GraphQL API is available to accounts across the paid tiers and carries no
+  separate API fee; it simply automates what the account can already do in Studio.
+  A free trial is offered on Core and Pro (no credit card required). ScreenCloud
+  advertises a discount for schools, universities, and non-profits.
+notes: >-
+  Per-screen prices below reflect ScreenCloud's published pricing page as of the
+  review date (USD, plus VAT). Screen minimums for Pro and Enterprise vary by
+  source and sales negotiation; verify current pricing, minimums, and feature
+  breakdowns on screencloud.com/pricing during reconciliation.
+sources:
+- https://screencloud.com/pricing
+- https://screencloud.com/pricing/enterprise
+- https://developer.screencloud.com/
+plans:
+- id: screencloud-core
+  name: Core
+  type: paid
+  description: >-
+    Entry tier for businesses getting started with digital signage. Includes
+    80-plus apps and integrations, unlimited file storage, design templates, and
+    Quick Post. Includes access to the Studio GraphQL API.
+  entries:
+  - label: Per Screen
+    name: core_per_screen
+    type: flat
+    metric: screen
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '20'
+    currency: USD
+    userMultiplied: false
+  elements:
+  - name: 80+ Apps and Integrations
+  - name: Unlimited File Storage
+  - name: Design Templates and Quick Post
+  - name: Studio GraphQL API Access
+  - name: Free Trial
+- id: screencloud-pro
+  name: Pro
+  type: paid
+  description: >-
+    Advanced tier for teams needing analytics and richer content. Adds premium
+    apps and integrations, dashboards, and QR-code metrics on top of Core.
+    Includes access to the Studio GraphQL API.
+  entries:
+  - label: Per Screen
+    name: pro_per_screen
+    type: flat
+    metric: screen
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '30'
+    currency: USD
+    userMultiplied: false
+  elements:
+  - name: Everything in Core
+  - name: Premium Apps and Integrations
+  - name: Dashboards
+  - name: QR Code Metrics
+  - name: Studio GraphQL API Access
+  - name: Free Trial
+- id: screencloud-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom tier for large-scale deployments with full setup support. Adds a free
+    device on annual plans, professional design support, and onboarding and
+    training on top of Pro. Quote-only via sales.
+  entries:
+  - label: Per Screen
+    name: enterprise_per_screen
+    type: flat
+    metric: screen
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Everything in Pro
+  - name: Free Device on Annual Plan
+  - name: Professional Design Support
+  - name: Onboarding and Training
+  - name: Custom Pricing and Volume Terms
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

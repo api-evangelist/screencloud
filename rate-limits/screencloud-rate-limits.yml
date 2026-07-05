@@ -1,0 +1,63 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: ScreenCloud
+providerId: screencloud
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Digital Signage
+- Screens
+- GraphQL
+- Rate Limiting
+- Quotas
+description: >-
+  ScreenCloud does not publish fixed numeric rate limits for the Studio GraphQL
+  API. Practical usage limits are governed by your subscription (the number of
+  licensed screens on your plan) rather than by a documented per-minute request
+  cap. As with any GraphQL API, request cost varies with query depth and the
+  number of nodes requested, and bulk mutations (for example bulkUpdateScreenContent
+  or sendCommandToScreensByScreenIds) act on many screens per call.
+notes: >-
+  No numeric per-token or per-endpoint request-rate limit is documented as of the
+  review date. Values here are modeled guidance, not published limits. Confirm any
+  current throttling behavior with ScreenCloud support and design clients to back
+  off on HTTP 429 or GraphQL error responses.
+sources:
+- https://screencloud.github.io/signage-next-graphql-docs/overview/
+- https://screencloud.github.io/signage-next-graphql-docs/error-handling
+- https://developer.screencloud.com/
+responseCodes:
+  throttled: 429
+limits:
+- name: Studio GraphQL API Requests
+  scope: token
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the Studio GraphQL endpoint.
+- name: Query Complexity
+  scope: request
+  metric: nodes
+  limit: not published
+  notes: GraphQL request cost scales with query depth and node count; deep or wide queries may be rejected or slowed. Modeled, not published.
+- name: Licensed Screens
+  scope: account
+  metric: screens
+  limit: per plan
+  notes: The number of screens you can manage is bounded by paid screen licenses on your Core, Pro, or Enterprise subscription.
+- name: Bulk Mutation Fan-Out
+  scope: request
+  metric: screens
+  limit: configurable per call
+  notes: Bulk operations act on the list of screen IDs supplied; batch sizes are governed by the caller and by any internal limits, which are not published.
+policies:
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+- name: Pagination
+  description: List queries expose ordering and pagination (OrderBy enums, cursor connections); page results rather than requesting unbounded lists.
+- name: Least-Privilege Tokens
+  description: Create API tokens with only the permissions needed rather than granting full access, to bound the blast radius of any single token.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,197 @@
+aid: screencloud
+name: ScreenCloud
+review:
+  question: Does ScreenCloud expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-05'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. ScreenCloud's public developer surface -
+    the Studio API - is a single GraphQL endpoint served over HTTPS as
+    request/response only. There is no documented server-push transport
+    (WebSocket or Server-Sent Events) on ScreenCloud's public API to model.
+    Realtime delivery of content to screens (player updates, screen commands
+    such as refresh/clear-cache/screenshot) happens over ScreenCloud's internal
+    player transport, which is not part of the documented public GraphQL API and
+    is not published as a WebSocket interface for third-party developers.
+findings:
+  summary: |
+    ScreenCloud does not publish a documented public WebSocket API. ScreenCloud
+    is a cloud digital signage platform. Its documented public developer
+    interface is the ScreenCloud Studio API: a single GraphQL endpoint
+    authenticated with a bearer token (Authorization: Bearer <token>). The token
+    is created in Studio under Account Settings > DEVELOPER > New Token, and the
+    GraphQL endpoint URL itself is region-specific and copied from that same
+    DEVELOPER tab (it is not published as one fixed public URL). All queries and
+    mutations are request/response GraphQL over HTTPS. The public schema
+    (Studio Service v2.103.0) confirms hundreds of queries and mutations
+    covering screens, screen pairing, playlists, files/media, folders, channels,
+    casts, apps and app instances, spaces/sites, tags, billing, and playback
+    logs - but exposes no WebSocket (ws:// or wss://) or SSE subscription
+    transport for third-party developers. GraphQL subscriptions are not
+    documented on the public endpoint.
+  developerPlatform: |
+    In addition to the Studio GraphQL API, ScreenCloud runs a Developer Platform
+    / App framework (screencloud.github.io/developer) for building custom signage
+    apps with standard HTML and JavaScript. Custom apps are private by default and
+    can be published to the public App Store with ScreenCloud approval ("just let
+    us know and we'll make it happen"), so that publishing path is partner-gated.
+    The App framework provides a client-side runtime (preloading, themes, webhooks,
+    lifecycle) for apps rendered on the player; it is not a WebSocket API.
+  legacyRouterApi: |
+    A legacy "ScreenCloud Router API" is published on Apiary
+    (screencloud.docs.apiary.io). It predates the Studio GraphQL API and is not
+    the current recommended integration surface. The modern, documented public
+    developer surface is the Studio GraphQL API at developer.screencloud.com.
+  transports:
+    - protocol: GraphQL
+      scheme: https
+      baseURL: region-specific (copied from Studio DEVELOPER tab)
+      documented: true
+      note: Single Studio API GraphQL endpoint, bearer-token auth, request/response over HTTPS. URL varies by organization region and is not published as one fixed host.
+    - protocol: REST
+      scheme: https
+      documented: true
+      note: Legacy Router API on Apiary (screencloud.docs.apiary.io). Predates and is superseded by the Studio GraphQL API.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in the ScreenCloud Studio API reference, developer platform, or help center as of the review date.
+    - protocol: SSE
+      scheme: https
+      documented: false
+      note: No Server-Sent Events / GraphQL subscription transport is documented on the public Studio API as of the review date.
+  endpointsModeled: |
+    ScreenCloud does not publish the GraphQL endpoint host as one fixed public
+    URL (it is region-specific and retrieved from the Studio DEVELOPER tab), so
+    the baseURL in apis.yml is set to the Studio platform host
+    (https://studio.screencloud.com) rather than a fabricated GraphQL host. The
+    GraphQL OPERATION names below are NOT modeled - they are taken verbatim from
+    the public Studio Service schema (v2.103.0) sitemap of the GraphQL reference.
+  operationsConfirmedGraphql:
+    queries:
+      - allScreens
+      - screen
+      - screenById
+      - screenByDeviceId
+      - searchScreen
+      - allScreenGroups
+      - allPlaylists
+      - playlist
+      - searchPlaylist
+      - allFiles
+      - file
+      - searchFile
+      - allFolders
+      - folderHierarchy
+      - allChannels
+      - channel
+      - searchChannel
+      - allCasts
+      - cast
+      - allApps
+      - app
+      - appBySlug
+      - allAppInstances
+      - appInstance
+      - allSpaces
+      - allSites
+      - allTags
+      - getPlaybackLogs
+      - exportPlaybackLogs
+      - allScreenContentHistories
+      - allLogs
+      - getQRMetrics
+      - downloadQRMetrics
+      - currentOrg
+      - currentUser
+      - currentOrgId
+    mutations:
+      - pairScreen
+      - depairScreen
+      - createScreen
+      - updateScreenById
+      - deleteScreen
+      - createScreenGroup
+      - setScreenContent
+      - setScreenContentByPlaylistId
+      - setScreenContentByChannelId
+      - bulkUpdateScreenContent
+      - refreshScreen
+      - clearCacheScreen
+      - takeScreenshotByScreenId
+      - sendCommandToScreensByScreenIds
+      - createPlaylist
+      - updatePlaylist
+      - deletePlaylist
+      - addFileToPlaylist
+      - addLinkToPlaylist
+      - addAppInstanceToPlaylist
+      - publishDraftPlaylist
+      - createFile
+      - updateFileById
+      - deleteFileById
+      - createFolder
+      - createChannel
+      - updateChannel
+      - deleteChannel
+      - publishDraftChannel
+      - duplicateChannel
+      - addPlaylistToChannel
+      - addFileToChannel
+      - addAppInstanceToChannel
+      - castStart
+      - castStop
+      - createCasts
+      - createAppInstance
+      - updateAppInstance
+      - deleteAppInstance
+      - installOrgApp
+      - installSpaceApp
+      - uninstallOrgApp
+      - createToken
+      - createSpace
+      - createSite
+      - createTag
+sources:
+  - url: https://developer.screencloud.com/
+    type: Documentation
+    note: Developer landing - Studio GraphQL API and Studio Developer Platform.
+  - url: https://screencloud.github.io/signage-next-graphql-docs/overview/
+    type: Documentation
+    note: Studio API is GraphQL, single HTTPS endpoint, no versioning; HTTP transport only.
+  - url: https://screencloud.github.io/signage-next-graphql-docs/get-an-api-token/
+    type: Documentation
+    note: Bearer-token auth (Authorization Bearer); endpoint copied from Studio DEVELOPER tab, region-specific.
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/query
+    type: APIReference
+    note: Full list of public GraphQL queries (source of operationsConfirmedGraphql.queries).
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/mutation
+    type: APIReference
+    note: Full list of public GraphQL mutations (source of operationsConfirmedGraphql.mutations).
+  - url: https://screencloud.github.io/signage-next-graphql-docs/tutorial-pairing-a-screen
+    type: Documentation
+    note: Screen pairing tutorial using the pairScreen mutation. No WebSocket.
+  - url: https://screencloud.github.io/signage-next-graphql-docs/tutorial-playback-logs
+    type: Documentation
+    note: Playback logs tutorial using getPlaybackLogs / exportPlaybackLogs.
+  - url: https://screencloud.github.io/developer/
+    type: Documentation
+    note: Developer Platform / App framework - custom HTML/JS signage apps; App Store publishing is approval-gated. Client-side runtime, not a WebSocket API.
+  - url: https://screencloud.docs.apiary.io/
+    type: APIReference
+    note: Legacy Router API on Apiary, superseded by the Studio GraphQL API.
+  - url: https://help.screencloud.com/en/collections/10860278-developer-api
+    type: Documentation
+    note: Help Center Developer & API collection.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists on ScreenCloud's public API. The
+    documented public developer interface is a single request/response GraphQL
+    endpoint (Studio API). No AsyncAPI document was created because there is no
+    server-push transport on ScreenCloud's public API to model; player-side
+    realtime delivery to screens is internal and not published as a public
+    WebSocket interface.

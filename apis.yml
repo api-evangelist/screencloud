@@ -1,0 +1,195 @@
+aid: screencloud
+url: https://raw.githubusercontent.com/api-evangelist/screencloud/refs/heads/main/apis.yml
+name: ScreenCloud
+kind: company
+description: ScreenCloud is a cloud digital signage platform that turns any screen
+  into a managed display for content, dashboards, and apps. Its developer surface is
+  the ScreenCloud Studio API - a single public GraphQL endpoint (bearer-token
+  authenticated, region-specific, copied from the DEVELOPER tab in Studio) that lets
+  you automate anything you can do in Studio by hand - pairing and managing screens,
+  building playlists and channels, uploading media and files, casting content,
+  installing and configuring signage apps, and exporting playback logs and QR
+  metrics. ScreenCloud also runs a Developer Platform / App framework for building
+  custom HTML/JavaScript signage apps that can be published (with approval) to the
+  App Store. There is no documented public WebSocket API - the Studio API is
+  request/response GraphQL over HTTPS.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Digital Signage
+- Screens
+- Content Management
+- GraphQL
+- Media
+- Playlists
+- Displays
+created: '2026-07-05'
+modified: '2026-07-05'
+specificationVersion: '0.19'
+apis:
+- aid: screencloud:screencloud-studio-screens-api
+  name: ScreenCloud Studio Screens API
+  tags:
+  - Screens
+  - Pairing
+  - Displays
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.screencloud.com/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/signage-next-graphql-docs/overview/
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/query
+    type: APIReference
+  - url: https://screencloud.github.io/signage-next-graphql-docs/tutorial-pairing-a-screen
+    type: GettingStarted
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  - url: graphql/screencloud-graphql.md
+    type: GraphQL
+  description: GraphQL operations for managing screens - pair and depair devices
+    (pairScreen, depairScreen), list and search screens (allScreens, screen,
+    screenByDeviceId, searchScreen), organize screen groups, assign what a screen
+    plays (setScreenContent and its per-content variants), and send commands such as
+    refresh, clear cache, and screenshot. Part of the single ScreenCloud Studio
+    GraphQL endpoint.
+- aid: screencloud:screencloud-studio-playlists-api
+  name: ScreenCloud Studio Playlists API
+  tags:
+  - Playlists
+  - Content
+  - Scheduling
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.screencloud.com/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/signage-next-graphql-docs/overview/
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/mutation
+    type: APIReference
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for building and maintaining playlists - the
+    ordered sequences of content shown on screens. Create, update, and delete
+    playlists (createPlaylist, updatePlaylist, deletePlaylist), add files, links,
+    and app instances to a playlist (addFileToPlaylist, addLinkToPlaylist,
+    addAppInstanceToPlaylist), publish and revert drafts, and list or search
+    playlists (allPlaylists, searchPlaylist).
+- aid: screencloud:screencloud-studio-media-files-api
+  name: ScreenCloud Studio Media and Files API
+  tags:
+  - Media
+  - Files
+  - Folders
+  - Storage
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.screencloud.com/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/signage-next-graphql-docs/overview/
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/mutation
+    type: APIReference
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for uploading and organizing the media library -
+    images, videos, and documents. Create and manage files (createFile,
+    updateFileById, deleteFileById) and folders (createFolder, folderHierarchy),
+    search and tag media (searchFile, filesByTagNames), track file processing jobs,
+    and manage recycle bins and duplicates.
+- aid: screencloud:screencloud-studio-channels-casts-api
+  name: ScreenCloud Studio Channels and Casts API
+  tags:
+  - Channels
+  - Casts
+  - Layouts
+  - Zones
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.screencloud.com/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/signage-next-graphql-docs/overview/
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/query
+    type: APIReference
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for channels - the multi-zone layouts that compose
+    playlists, apps, and media into a single screen experience - and for casting.
+    Create, update, publish, and duplicate channels (createChannel, updateChannel,
+    publishDraftChannel, duplicateChannel), add content to a channel
+    (addPlaylistToChannel, addFileToChannel, addAppInstanceToChannel), and start or
+    stop casts to screens (castStart, castStop, createCasts).
+- aid: screencloud:screencloud-studio-apps-api
+  name: ScreenCloud Studio Apps API
+  tags:
+  - Apps
+  - App Instances
+  - Integrations
+  - Developer Platform
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://screencloud.github.io/developer/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/developer/
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/query
+    type: APIReference
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for signage apps and their instances - list the app
+    catalog and categories (allApps, allAppCategories, appBySlug), create and
+    configure app instances (createAppInstance, updateAppInstance,
+    duplicateAppInstance), and install or uninstall apps at org or space scope
+    (installOrgApp, installSpaceApp, uninstallOrgApp). Complements the ScreenCloud
+    Developer Platform / App framework for building custom HTML and JavaScript
+    signage apps.
+- aid: screencloud:screencloud-studio-playback-logs-api
+  name: ScreenCloud Studio Playback Logs API
+  tags:
+  - Playback Logs
+  - Proof of Play
+  - Analytics
+  - QR Metrics
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.screencloud.com/
+  baseURL: https://studio.screencloud.com
+  properties:
+  - url: https://screencloud.github.io/signage-next-graphql-docs/tutorial-playback-logs
+    type: Documentation
+  - url: https://screencloud.github.io/signage-next-graphql-docs/graphql-reference/query
+    type: APIReference
+  - url: graphql/screencloud-studio-schema.graphql
+    type: GraphQL
+  description: GraphQL operations for proof-of-play and engagement reporting - fetch
+    and export what played on which screen and when (getPlaybackLogs,
+    exportPlaybackLogs), query logs and screen content histories (allLogs,
+    allScreenContentHistories), and pull QR-code engagement metrics (getQRMetrics,
+    downloadQRMetrics).
+common:
+- type: GitHubOrganization
+  url: https://github.com/screencloud
+- type: LinkedIn
+  url: https://www.linkedin.com/company/screencloud
+- type: Website
+  url: https://screencloud.com
+- type: Documentation
+  url: https://developer.screencloud.com/
+- type: SignUp
+  url: https://studio.screencloud.com
+- type: Plans
+  url: plans/screencloud-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/screencloud-rate-limits.yml
+- type: FinOps
+  url: finops/screencloud-finops.yml
+- url: https://screencloud.com/blog
+  type: Blog
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ScreenCloud Studio API (GraphQL)",
+    "version": "1.0",
+    "description": "GraphQL operations for the ScreenCloud Studio API. Set graphqlEndpoint to the region-specific endpoint from Studio > Account Settings > DEVELOPER, and bearerToken to a token created on that same tab. All requests are HTTP POST with a GraphQL body."
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "variables": [
+    { "name": "graphqlEndpoint", "value": "https://studio.screencloud.com", "description": "Region-specific Studio GraphQL endpoint copied from the DEVELOPER tab." },
+    { "name": "bearerToken", "value": "", "description": "Studio API token (Account Settings > DEVELOPER > New Token)." }
+  ],
+  "items": [
+    {
+      "info": { "name": "Session", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Connectivity test (currentOrgId)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { currentOrgId }\"}" }
+          },
+          "docs": "Simplest query to confirm the endpoint and token work."
+        },
+        {
+          "info": { "name": "Current org and user", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { currentOrg { id name } currentUser { id email } }\"}" }
+          },
+          "docs": "Returns the org and user the token is scoped to."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Screens", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List screens (allScreens)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { allScreens { id name deviceId } }\"}" }
+          },
+          "docs": "Lists screens in the account."
+        },
+        {
+          "info": { "name": "Pair a screen (pairScreen)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($code: String!, $name: String, $spaceId: UUID) { pairScreen(pairingCode: $code, name: $name, spaceId: $spaceId) { id name deviceId } }\",\"variables\":{\"code\":\"\",\"name\":\"Lobby\",\"spaceId\":null}}" }
+          },
+          "docs": "Pairs a device using the pairing code shown on the screen."
+        },
+        {
+          "info": { "name": "Depair a screen (depairScreen)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($id: UUID!) { depairScreen(id: $id) { id } }\",\"variables\":{\"id\":\"\"}}" }
+          },
+          "docs": "Unpairs a screen, freeing its license."
+        },
+        {
+          "info": { "name": "Assign playlist to screen (setScreenContentByPlaylistId)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($screenId: UUID!, $playlistId: UUID!) { setScreenContentByPlaylistId(screenId: $screenId, playlistId: $playlistId) { id } }\",\"variables\":{\"screenId\":\"\",\"playlistId\":\"\"}}" }
+          },
+          "docs": "Sets a screen to play a playlist."
+        },
+        {
+          "info": { "name": "Refresh screen (refreshScreen)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($id: UUID!) { refreshScreen(id: $id) { id } }\",\"variables\":{\"id\":\"\"}}" }
+          },
+          "docs": "Forces a screen to reload its content."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Playlists", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List playlists (allPlaylists)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { allPlaylists { id name isPublished } }\"}" }
+          },
+          "docs": "Lists playlists in the account."
+        },
+        {
+          "info": { "name": "Create playlist (createPlaylist)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($name: String!, $spaceId: UUID!) { createPlaylist(name: $name, spaceId: $spaceId) { id name } }\",\"variables\":{\"name\":\"New Playlist\",\"spaceId\":\"\"}}" }
+          },
+          "docs": "Creates a playlist in a space."
+        },
+        {
+          "info": { "name": "Add file to playlist (addFileToPlaylist)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($playlistId: UUID!, $fileId: UUID!, $durationMs: Int) { addFileToPlaylist(playlistId: $playlistId, fileId: $fileId, durationMs: $durationMs) { id } }\",\"variables\":{\"playlistId\":\"\",\"fileId\":\"\",\"durationMs\":10000}}" }
+          },
+          "docs": "Adds a media file to a playlist with a display duration."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Media & Files", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List files (allFiles)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { allFiles { id name mimeType fileSize } }\"}" }
+          },
+          "docs": "Lists media files in the library."
+        },
+        {
+          "info": { "name": "Create folder (createFolder)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($name: String!, $parentId: UUID) { createFolder(name: $name, parentId: $parentId) { id name } }\",\"variables\":{\"name\":\"Campaign Assets\",\"parentId\":null}}" }
+          },
+          "docs": "Creates a folder to organize media."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Channels & Casts", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List channels (allChannels)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { allChannels { id name isPublished } }\"}" }
+          },
+          "docs": "Lists channels in the account."
+        },
+        {
+          "info": { "name": "Create channel (createChannel)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($name: String!, $spaceId: UUID!) { createChannel(name: $name, spaceId: $spaceId) { id name } }\",\"variables\":{\"name\":\"Lobby Channel\",\"spaceId\":\"\"}}" }
+          },
+          "docs": "Creates a multi-zone channel."
+        },
+        {
+          "info": { "name": "Start cast (castStart)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($screenId: UUID!, $contentType: String!, $contentId: UUID!) { castStart(screenId: $screenId, contentType: $contentType, contentId: $contentId) { id startedAt } }\",\"variables\":{\"screenId\":\"\",\"contentType\":\"PLAYLIST\",\"contentId\":\"\"}}" }
+          },
+          "docs": "Temporarily casts content to a screen."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Apps", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List apps (allApps)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query { allApps { id name slug } }\"}" }
+          },
+          "docs": "Lists the signage app catalog available to the org."
+        },
+        {
+          "info": { "name": "Create app instance (createAppInstance)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"mutation($appId: UUID!, $name: String!, $spaceId: UUID!, $config: JSON) { createAppInstance(appId: $appId, name: $name, spaceId: $spaceId, config: $config) { id name status } }\",\"variables\":{\"appId\":\"\",\"name\":\"Weather NYC\",\"spaceId\":\"\",\"config\":{}}}" }
+          },
+          "docs": "Creates a configured instance of an app to place in playlists/channels."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Playback Logs", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get playback logs (getPlaybackLogs)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query($screenId: UUID, $from: Datetime, $to: Datetime) { getPlaybackLogs(screenId: $screenId, from: $from, to: $to) { screenId contentType contentId startedAt endedAt durationMs } }\",\"variables\":{\"screenId\":null,\"from\":null,\"to\":null}}" }
+          },
+          "docs": "Proof-of-play: what played on which screen and when."
+        },
+        {
+          "info": { "name": "Export playback logs (exportPlaybackLogs)", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "{{graphqlEndpoint}}",
+            "body": { "type": "json", "data": "{\"query\":\"query($from: Datetime, $to: Datetime) { exportPlaybackLogs(from: $from, to: $to) }\",\"variables\":{\"from\":null,\"to\":null}}" }
+          },
+          "docs": "Returns an export (e.g. a download URL) of playback logs for a period."
+        }
+      ]
+    }
+  ]
+}

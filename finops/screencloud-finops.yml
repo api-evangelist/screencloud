@@ -1,0 +1,89 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: ScreenCloud
+providerId: screencloud
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Digital Signage
+- Screens
+- Content Management
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of ScreenCloud spend. ScreenCloud is a per-screen SaaS subscription -
+  cost is driven by the number of licensed screens times the plan rate (Core, Pro,
+  or Enterprise), billed monthly or annually. The Studio GraphQL API carries no
+  separate metered fee; it automates the same account and is not itself a cost
+  driver. The dominant, most controllable cost lever is the count of active screen
+  licenses and the plan tier each screen sits on.
+notes: >-
+  Per-screen rates are on the ScreenCloud pricing page and reflected in the plans
+  file; Enterprise is quote-only. This is a fixed-subscription model rather than a
+  usage-metered API, so there is no per-request billing to allocate.
+sources:
+- https://screencloud.com/pricing
+- https://screencloud.com/pricing/enterprise
+- https://developer.screencloud.com/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: ScreenCloud
+serviceCategory: Digital Signage and Content Management
+billingModel:
+  pricingCategory: Subscription
+  billingFrequency: Monthly or Annual
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: ScreenCloud Studio
+  ServiceCategory: Digital Signage and Content Management
+  ProviderName: ScreenCloud
+  PublisherName: ScreenCloud
+  InvoiceIssuerName: ScreenCloud
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription
+meters:
+- name: screen_licenses
+  description: Number of licensed screens on the subscription; the primary billing driver, multiplied by the plan per-screen rate.
+  unit: screens
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+  - space
+- name: plan_tier
+  description: Per-screen plan rate (Core, Pro, or Enterprise) applied to each licensed screen.
+  unit: tier
+  aggregation: max
+  dimensions:
+  - account
+- name: premium_addons
+  description: Premium apps, integrations, professional services, and hardware/devices billed on top of the base subscription.
+  unit: items
+  aggregation: sum
+  dimensions:
+  - account
+principles:
+- name: Visibility
+  description: Track active screen licenses per space and plan tier so signage spend is attributable to locations and teams.
+- name: Allocation
+  description: Group screens by space/site and tag them so the per-screen subscription cost maps to internal cost centers and locations.
+- name: Optimization
+  description: Depair and remove screens that are offline or retired so you stop paying for unused licenses; right-size each screen to Core versus Pro based on whether it actually needs Pro-only features; consolidate content via channels/playlists rather than adding screens.
+- name: Accountability
+  description: Assign an owner per space/site; review the licensed-screen count against the invoice each billing cycle and reconcile Enterprise quotes at renewal.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
