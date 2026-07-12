@@ -172,6 +172,10 @@ apis:
     allScreenContentHistories), and pull QR-code engagement metrics (getQRMetrics,
     downloadQRMetrics).
 common:
+- type: TrustCenter
+  url: security/screencloud-trust-center.yml
+- type: DomainSecurity
+  url: security/screencloud-domain-security.yml
 - type: GitHubOrganization
   url: https://github.com/screencloud
 - type: LinkedIn

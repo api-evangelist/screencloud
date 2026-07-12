@@ -1,0 +1,15 @@
+generated: '2026-07-11'
+method: searched
+probe: true
+source: https://screencloud.com/security
+url: https://screencloud.com/security
+certifications:
+- SOC 2
+- GDPR
+evidence:
+- source: https://screencloud.com/security
+  keywords:
+  - soc 2
+  - trust center
+  - compliance certification
+  - gdpr
