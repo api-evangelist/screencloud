@@ -92,6 +92,12 @@ apis:
   name: ScreenCloud Studio Media and Files API
   tags:
   - Media
+  - File
+  - Folders
+  - Storage
+  - GraphQL
+  tags_raw:
+  - Media
   - Files
   - Folders
   - Storage
@@ -138,6 +144,12 @@ apis:
 - aid: screencloud:screencloud-studio-apps-api
   name: ScreenCloud Studio Apps API
   tags:
+  - Application
+  - App Instances
+  - Integration
+  - Developer Platform
+  - GraphQL
+  tags_raw:
   - Apps
   - App Instances
   - Integrations
