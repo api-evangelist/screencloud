@@ -13,6 +13,17 @@ description: ScreenCloud is a cloud digital signage platform that turns any scre
   custom HTML/JavaScript signage apps that can be published (with approval) to the
   App Store. There is no documented public WebSocket API - the Studio API is
   request/response GraphQL over HTTPS.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: open
